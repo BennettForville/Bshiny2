@@ -1,0 +1,26 @@
+{
+    "id": "7AFFCC52",
+    "path": "~/GitHub/Bshiny2/app.R",
+    "project_path": "app.R",
+    "type": "r_source",
+    "hash": "1888149102",
+    "contents": "",
+    "dirty": true,
+    "created": 1647283734560.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "62,7",
+        "scrollLine": "59"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1647285596,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1647285627835,
+    "read_only": false,
+    "read_only_alternatives": []
+}
