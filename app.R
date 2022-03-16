@@ -52,16 +52,16 @@ server <- function(input, output) {
     core45 <- newcore(RCP45)
     run(core45)
     plot_data <- fetchvars(core45,2000:2200)
-    shutdown(core45)
     
-    ggplot(plot_data, aes(year, value))+
-      geom_point()+
-      facet_wrap(~variable, scales = "free")+
-      ggtitle(input$Q10)
+    # ggplot(plot_data, aes(year, value))+
+    #   geom_point()+
+    #   facet_wrap(~variable, scales = "free")+
+    #   ggtitle(input$Q10)
+  
     
    run_with_param <- function(core, parameter, value) {
-       #old_value <- fetchvars(core, NA, parameter)
-       #unit <- as.character(old_value[["units"]])
+       old_value <- fetchvars(core, NA, parameter)
+       unit <- as.character(old_value[["units"]])
        setvar(core, NA, parameter, value, unit)
        reset(core)
        run(core)
@@ -69,9 +69,13 @@ server <- function(input, output) {
        result[["parameter_value"]] <- value
        result
     }
+
+   x <- run_with_param(core45, Q10_RH(), input$Q10)
    
-   x <- run_with_param(core45, Q10_RH(), input$value)
-    
+   ggplot(x, aes(year, value))+
+   geom_point()+
+   facet_wrap(~variable, scales = "free")
+   shutdown(core45)
   })
 
 }
