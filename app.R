@@ -48,35 +48,51 @@ server <- function(input, output) {
   # 2. Its output type is a plot
   output$distPlot <- renderPlot({
     
+    q10 <- input$Q10
+    
     RCP45 <- system.file("input/hector_ssp245.ini", package = "hector")
     core45 <- newcore(RCP45)
+    setvar(core45, NA, Q10_RH(), q10, getunits(Q10_RH()))
     run(core45)
-    plot_data <- fetchvars(core45,2000:2200)
+    result <- fetchvars(core45, 2000:2200)
+    shutdown(core45)
     
-    # ggplot(plot_data, aes(year, value))+
-    #   geom_point()+
-    #   facet_wrap(~variable, scales = "free")+
-    #   ggtitle(input$Q10)
-  
-    
-   run_with_param <- function(core, parameter, value) {
-       old_value <- fetchvars(core, NA, parameter)
-       unit <- as.character(old_value[["units"]])
-       setvar(core, NA, parameter, value, unit)
-       reset(core)
-       run(core)
-       result <- fetchvars(core, 2000:2200)
-       result[["parameter_value"]] <- value
-       result
-    }
-
-   x <- run_with_param(core45, Q10_RH(), input$Q10)
-   
-   ggplot(x, aes(year, value))+
-   geom_point()+
-   facet_wrap(~variable, scales = "free")
-   shutdown(core45)
+    ggplot(result, aes(year, value))+
+      geom_point()+
+      facet_wrap(~variable, scales = "free") + 
+      ggtitle(q10)
   })
+    
+  #   RCP45 <- system.file("input/hector_ssp245.ini", package = "hector")
+  #   core45 <- newcore(RCP45)
+  #   run(core45)
+  #   plot_data <- fetchvars(core45,2000:2200)
+  #   shutdown(core45)
+  #   
+  #   # ggplot(plot_data, aes(year, value))+
+  #   #   geom_point()+
+  #   #   facet_wrap(~variable, scales = "free")+
+  #   #   ggtitle(input$Q10)
+  # 
+  #   
+  #  run_with_param <- function(core, parameter, value) {
+  #      old_value <- fetchvars(core, NA, parameter)
+  #      unit <- as.character(old_value[["units"]])
+  #      setvar(core, NA, parameter, value, unit)
+  #      reset(core)
+  #      run(core)
+  #      result <- fetchvars(core, 2000:2200)
+  #      result[["parameter_value"]] <- value
+  #      result
+  #   }
+  # 
+  #  x <- run_with_param(core45, Q10_RH(), input$Q10)
+  #  
+  #  ggplot(x, aes(year, value))+
+  #  geom_point()+
+  #  facet_wrap(~variable, scales = "free")
+  #  
+  # })
 
 }
 
