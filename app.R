@@ -3,6 +3,21 @@ library(hector)
 library(ggplot2)
 library(dplyr)
 
+scenario_choices <- c("SSP119 (Green hippie world)",
+                      "SSP245(Middle of the road)",
+                      "SSP370 (Eh.)",
+                      "SSP460 (We might have a chance of survival)",
+                      "SSP585 (Armageddon)")
+SSP_files <- c("input/hector_ssp119.ini",
+               "input/hector_ssp245.ini",
+               "input/hector_ssp370.ini",
+               "input/hector_ssp460.ini",
+               "input/hector_ssp585.ini")
+names(SSP_files) <- scenario_choices
+
+               
+variables <- c(ATMOSPHERIC_CO2(), GLOBAL_TEMP(), SOIL_C(), PH_HL(), PH_LL())
+               
 
 
 # Define UI for app that draws a histogram ----
@@ -22,7 +37,13 @@ ui <- fluidPage(
                   label = "Q10 values:",
                   min = 1,
                   max = 5,
-                  value = 2)
+                  value = 2),
+    
+        radioButtons(inputId = "SSP",
+                   label = "Scenario choices:",
+                   choices = scenario_choices,
+                   selected = "SSP245")
+      
       
     ),
     
@@ -44,30 +65,33 @@ ui <- fluidPage(
 # shutdown(reference_plot)
 
 # Define server logic required to draw a histogram ----
-server <- function(input, output) {
+server <- function(inputID, output) {
 
     output$distPlot <- renderPlot({
     
     q10 <- input$Q10
     
-    RCP45 <- system.file("input/hector_ssp245.ini", package = "hector")
-    core45 <- newcore(RCP45)
-    reference <- fetchvars(core45, NA)
+    file <- SSP_files[input$SSP]
+    Sc <- system.file(file, package = "hector")
+    core <- newcore(Sc)
+    run(core)
+    reference <- fetchvars(core, 2000:2200, variables)
     reference$source <- "reference"
-    setvar(core45, NA, Q10_RH(), q10, getunits(Q10_RH()))
-    run(core45)
-    result <- fetchvars(core45, 2000:2200)
+    setvar(core, NA, Q10_RH(), q10, getunits(Q10_RH()))
+    reset(core)
+    run(core)
+    result <- fetchvars(core, 2000:2200, variables)
     result$source <- "user_input"
-    shutdown(core45)
+    shutdown(core)
     
     output <- bind_rows(reference,result)
     
     ggplot(output, aes(year, value, color = source))+
-      geom_point()+
+      geom_line()+
       facet_wrap(~variable, scales = "free") + 
-      ggtitle(q10)
-    #+
-     # geom_line(data = reference)
+      ggtitle(paste0("Q10 = ", q10, " in scenario ", input$SSP))
+    
+        
       
   })
   
