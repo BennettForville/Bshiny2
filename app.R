@@ -2,6 +2,7 @@ library(shiny)
 library(hector)
 library(ggplot2)
 library(dplyr)
+library(shinythemes)
 
 scenario_choices <- c("SSP119 (Green hippie world)",
                       "SSP245(Middle of the road)",
@@ -23,8 +24,11 @@ variables <- c(ATMOSPHERIC_CO2(), GLOBAL_TEMP(), SOIL_C(), PH_HL(), PH_LL())
 # Define UI for app that draws a histogram ----
 ui <- fluidPage(
   
+  # define theme
+  theme = shinytheme("superhero"),
+  
   # App title ----
-  titlePanel("graphing Hector!"),
+  titlePanel("What does our future look like?"),
   
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
@@ -34,15 +38,15 @@ ui <- fluidPage(
       
       # Input: Slider for the value of q10 ----
       sliderInput(inputId = "Q10",
-                  label = "Q10 values:",
+                  label = "Choose a Q10 value:",
                   min = 1,
                   max = 5,
                   value = 2),
     
         radioButtons(inputId = "SSP",
-                   label = "Scenario choices:",
+                   label = "Select a specific scenerio (SSP):",
                    choices = scenario_choices,
-                   selected = "SSP245")
+                   selected = "SSP245(Middle of the road)")
       
       
     ),
@@ -65,7 +69,7 @@ ui <- fluidPage(
 # shutdown(reference_plot)
 
 # Define server logic required to draw a histogram ----
-server <- function(inputID, output) {
+server <- function(input, output) {
 
     output$distPlot <- renderPlot({
     
@@ -89,7 +93,9 @@ server <- function(inputID, output) {
     ggplot(output, aes(year, value, color = source))+
       geom_line()+
       facet_wrap(~variable, scales = "free") + 
-      ggtitle(paste0("Q10 = ", q10, " in scenario ", input$SSP))
+      ggtitle(paste0("Q10 = ", q10, " in scenario ", input$SSP))+
+      theme_light()+
+      scale_color_viridis_d()
     
         
       
