@@ -3,12 +3,13 @@ library(hector)
 library(ggplot2)
 library(dplyr)
 library(shinythemes)
+library(shinyBS)
 
-scenario_choices <- c("SSP119 (Green hippie world)",
-                      "SSP245(Middle of the road)",
-                      "SSP370 (Eh.)",
-                      "SSP460 (We might have a chance of survival)",
-                      "SSP585 (Armageddon)")
+scenario_choices <- c("Scenario 1 - Green hippie world",
+                      "Scenario 2 - Middle of the road",
+                      "Scenario 3 - A rocky road",
+                      "Scenario 4 - Inequality",
+                      "Scenario 5 -  Armageddon")
 SSP_files <- c("input/hector_ssp119.ini",
                "input/hector_ssp245.ini",
                "input/hector_ssp370.ini",
@@ -46,7 +47,7 @@ ui <- fluidPage(
         radioButtons(inputId = "SSP",
                    label = "Select a specific scenerio (SSP):",
                    choices = scenario_choices,
-                   selected = "SSP245(Middle of the road)")
+                   selected = "Scenario 2 - Middle of the road")
       
       
     ),
@@ -54,8 +55,13 @@ ui <- fluidPage(
     # Main panel for displaying outputs ----
     mainPanel(
       
+      tabsetPanel(type = "tabs",
+                  tabPanel("Home", verbatimTextOutput("Home")),
+                  tabPanel("graphs", plotOutput(outputId = "distPlot")),
+                  tabPanel("summary", verbatimTextOutput("summary"))),
+                  
       # Output: Histogram ----
-      plotOutput(outputId = "distPlot")
+     # plotOutput(outputId = "distPlot")
       
     )
   )
@@ -90,13 +96,13 @@ server <- function(input, output) {
     
     output <- bind_rows(reference,result)
     
-    ggplot(output, aes(year, value, color = source))+
-      geom_line()+
+    ggplot(output, aes(year, value, color = source, linetype = units)) +
+      geom_line() +
       facet_wrap(~variable, scales = "free") + 
-      ggtitle(paste0("Q10 = ", q10, " in scenario ", input$SSP))+
-      theme_light()+
-      scale_color_viridis_d()
-    
+      ggtitle(paste0("Q10 = ", q10, " in scenario ", input$SSP)) +
+      scale_color_viridis_d(begin = 0.4, end = 0.8) +
+      scale_linetype_manual(values = c(3, 5, 4, 1)) +
+      theme_light()
         
       
   })
