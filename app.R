@@ -71,8 +71,8 @@ ui <- fluidPage(
         column(12,
                radioButtons(inputId = "SSP", 
                             label = "Select a specific scenario (SSP):", 
-
-                            choices = scenario_choices)
+                            choices = scenario_choices,
+                            selected = "Scenario 2 - Middle of the road")
 
         ),
         # id: same inputId as above (very important for reactivity)
