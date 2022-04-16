@@ -71,8 +71,9 @@ ui <- fluidPage(
         column(12,
                radioButtons(inputId = "SSP", 
                             label = "Select a specific scenario (SSP):", 
-                            choices = scenario_choices,
-                            selected = "Scenario 2 - Middle of the road")
+
+                            choices = scenario_choices)
+
         ),
         # id: same inputId as above (very important for reactivity)
         # title: text that will appear in the hover bar
@@ -152,4 +153,8 @@ server <- function(input, output) {
 }
 
 # Create Shiny app ----
+
 shinyApp(ui = ui, server = server)
+
+shinyApp(ui = ui, server = server)
+
