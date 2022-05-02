@@ -59,7 +59,41 @@ ui <- fluidPage(
     
     tabsetPanel(type = "tabs",
                 tabPanel("Home", verbatimTextOutput("Home"),
-                         mainPanel("This will be baisc climate info & explanation of important terms")),
+                         mainPanel( p("As we know, the planet is quickly warming. 
+                                   This is an event that we all know as climate change, but what exactly does it mean?"),
+                                   
+                                   p("Well, too much carbon dioxide, CO2, is being released into the atmosphere. This prevents 
+                                   heat from escaping and creates a global warming effect. There are many different impacts 
+                                   of climate change, some which we see in daily life and others that don't become apparent 
+                                   until you take a closer look."),
+                                   
+                                   p("Using Hector, a simple climate model, this app allows you to take a closer look at graphs
+                                   that track historical climate data and project possible future outcomes for the climate based
+                                   on our actions in the present day."),
+                                   
+                                   p("You will be able to manipulate the Q10 value and select a specific SSP. Q10 measures the 
+                                   sensitivity of heterotrophic respiration to temperature increases - essentially looking at 
+                                   how much carbon dioxide plants put into the atmosphere. A higher Q10 means more CO2. An SSP 
+                                   is a shared socioeconomic pathway; the SSPs are a widely used class of climate scenarios. This 
+                                   app uses SSP 1-5. SSP 2, called the middle of the road, is the best projection for our future 
+                                   if we don't make any drastic changes. SSP 1, 3, 4, & 5 are different possible outcomes for our 
+                                   climate depending on changes to global policy and our daily actions. An SSP is a good way to explore
+                                   the impacts of different global policies and how they would affect both the Earth and the people 
+                                   living on it. The SSPs are differentiated by different levels of challenge to mitigation, which is 
+                                   essentially looking at the reduction of carbon emissions, and adaptation, meaning changes that humans 
+                                   will have to make in order to live with the consequences of climate change. For example, taking mitigation 
+                                   efforts such as putting limits on fossil fuel emissions, encouraging the use of renewable energy, 
+                                   or even encouraging the use of public transportation would require a change in one's day to day life - 
+                                   some actions being more challenging to implement than others."),
+                                   
+                                   p("This app will provide you with several outcomes for the future while looking specifically at 
+                                   changes in global temperature, atmospheric carbon, carbon levels in soil, and ocean salinity. 
+                                   While it is impossible to establish all of the impacts caused by changes in these four climate
+                                   variables, this app allows you to take a look at possibilities for the future and to examine different
+                                   consequences."),
+                                   
+                                   p("After viewing the information under the graphs tab, head over to the impacts tab to learn more."),
+                                   width = 12)),
                 
                 
                 tabPanel("graphs", 
@@ -115,7 +149,42 @@ ui <- fluidPage(
                              )),
                            mainPanel(plotOutput(outputId = "distPlot")))),
                 tabPanel("impacts", verbatimTextOutput("impacts"),
-                         mainPanel("This will be overall impacts on climate and big take aways from app"))
+                         mainPanel("The impacts of climate change are vast and sometimes unexpected. As a result of the quickly changing
+                                   climate, we can expect a variety of outcomes. 
+                                   
+                                   Hotter. 
+                                   High temperatures are often talked about in connection to climate change. An increase of CO2 in the 
+                                   atmosphere means an increase in temperatures as well as an increase in soil carbon levels. The increase
+                                   of soil carbon could create a disturbance for the plants growing which could eventually result in e
+                                   xtinction and a lack of biodiversity. Heat waves, crop failures, and shifts in plant and animal ranges are 
+                                   expected to occur if carbon emissions continue to go unchecked. 
+                                   
+                                   Wetter. 
+                                   In correlation with the warming temperatures, glaciers and ice sheets will melt and the oceans will expand. 
+                                   Rising sea levels will ruin coastal communities and infrastructure. This will also lead to an increase in 
+                                   rainfall and flooding. It is important to note that a short term increase in rainfall could lead to drought 
+                                   and water shortages in the future.  
+                                   
+                                   More extreme. 
+                                   Warmer air and oceans are leading to an increase in the severity and number of storms and in drier areas, 
+                                   warmer weather is linked to more significant droughts and a longer fire season. 
+
+                                   To sum it up…  
+                                   Droughts
+                                   Extreme weather conditions 
+                                   Shortages in staple crops (corn & wheat)
+                                   Food insecurity
+                                   Price spikes on consumable items
+                                   Unlivable coastal regions
+                                   Death of coral reefs
+                                   Fish and sea life would be pushed from their homes
+                                   Mass extinction of climate dependent animals 
+                                   Arctic melting 
+                                   Lack of land and other resources 
+                                   Lack of resources could lead to political and social tensions"))
+                
+               
+                
                 )))
                              
                            
@@ -145,6 +214,8 @@ ui <- fluidPage(
         
         output <- bind_rows(reference, result)
         
+       
+          
         var_labels <- c("Atmospheric C", "Ocean pH", "Soil C", "Temperature increase")
         names(var_labels) <- variables
         
@@ -162,8 +233,6 @@ ui <- fluidPage(
     }
     
     # Create Shiny app ----
-    
-    shinyApp(ui = ui, server = server)
-    
+
     shinyApp(ui = ui, server = server)
     
