@@ -57,9 +57,12 @@ ui <- fluidPage(
   # Main panel for displaying outputs ----
   mainPanel(
     
-    tabsetPanel(type = "tabs",
-                tabPanel("Home", verbatimTextOutput("Home"),
-                         mainPanel( p("As we know, the planet is quickly warming. 
+    # Navigation bar to list app tabs
+    navbarPage(title = "",
+               id = "tabs",
+               
+               tabPanel(title ="Home", value = "home", verbatimTextOutput("Home"),
+                        mainPanel( p("As we know, the planet is quickly warming. 
                                    This is an event that we all know as climate change, but what exactly does it mean?"),
                                    
                                    p("Well, too much carbon dioxide, CO2, is being released into the atmosphere. This prevents 
@@ -93,146 +96,160 @@ ui <- fluidPage(
                                    consequences."),
                                    
                                    p("After viewing the information under the graphs tab, head over to the impacts tab to learn more."),
-                                   width = 12)),
-                
-                
-                tabPanel("graphs", 
-                         # Sidebar layout with input and output definitions ----
-                         sidebarLayout(
+                                   width = 12),
+                        
+                        # Button to take user to the graphs tab
+                        actionButton(inputId = "to_graphs",
+                                     label = "Next page")),
+               
+               tabPanel(title = "Graphs", value = "graphs",
+                        
+                        # Sidebar layout with input and output definitions ----
+                        sidebarLayout(
                           
-                  
-                           
-                           
-                           
-                           # Sidebar panel for inputs ----
-                           sidebarPanel(
-                             
-                             # Input: Slider for the value of q10 ----
-                             sliderInput(inputId = "Q10",
-                                         label = "Choose a Q10 value:",
-                                         min = 1,
-                                         max = 5,
-                                         value = 2),
-                             
-                             fluidRow(
-                               column(12,
-                                      radioButtons(inputId = "SSP", 
-                                                   label = "Select a specific scenario (SSP):", 
-                                                   choices = scenario_choices,
-                                                   selected = "Scenario 2 - Middle of the road")
-                                      
-                               ),
-                               # id: same inputId as above (very important for reactivity)
-                               # title: text that will appear in the hover bar
-                               # choice: from the list of scenario_choices passed into radioButtons
-                               # placement: optional, but where the hover bar will appear relative to text
-                               radioTooltip(id = "SSP", 
-                                            title = "SSP119 - lots of change to daily life, slow improvement",
-                                            choice = "Scenario 1 - Green hippie world",
-                                            placement = "right"),
-                               radioTooltip(id = "SSP",
-                                            title = "SSP245 - Not much change to daily life, no improvement",
-                                            choice = "Scenario 2 - Middle of the road",
-                                            placement = "right"),
-                               radioTooltip(id = "SSP",
-                                            title = "SSP370 - Focus on food & energy security, environmental degradation",
-                                            choice = "Scenario 3 - A rocky road",
-                                            placement = "right"),
-                               radioTooltip(id = "SSP",
-                                            title = "SSP460 - Unequal investments, rich get richer, poor get poorer",
-                                            choice = "Scenario 4 - Inequality",
-                                            placement = "right"),
-                               radioTooltip(id = "SSP",
-                                            title = "SSP585 - Human & global capital become main focus, fossil fuels are managed",
-                                            choice = "Scenario 5 -  Armageddon",
-                                            placement = "right")
-                             )),
-                           mainPanel(plotOutput(outputId = "distPlot")))),
-                tabPanel("impacts", verbatimTextOutput("impacts"),
-                         mainPanel("The impacts of climate change are vast and sometimes unexpected. As a result of the quickly changing
-                                   climate, we can expect a variety of outcomes. 
-                                   
-                                   Hotter. 
-                                   High temperatures are often talked about in connection to climate change. An increase of CO2 in the 
+                          # Sidebar panel for inputs ----
+                          sidebarPanel(
+                            
+                            # Input: Slider for the value of q10 ----
+                            sliderInput(inputId = "Q10",
+                                        label = "Choose a Q10 value:",
+                                        min = 1,
+                                        max = 5,
+                                        value = 2),
+                            
+                            fluidRow(
+                              column(12,
+                                     radioButtons(inputId = "SSP", 
+                                                  label = "Select a specific scenario (SSP):", 
+                                                  choices = scenario_choices,
+                                                  selected = "Scenario 2 - Middle of the road")),
+                              # id: same inputId as above (very important for reactivity)
+                              # title: text that will appear in the hover bar
+                              # choice: from the list of scenario_choices passed into radioButtons
+                              # placement: optional, but where the hover bar will appear relative to text
+                              radioTooltip(id = "SSP", 
+                                           title = "SSP119 - lots of change to daily life, slow improvement",
+                                           choice = "Scenario 1 - Green hippie world",
+                                           placement = "right"),
+                              radioTooltip(id = "SSP",
+                                           title = "SSP245 - Not much change to daily life, no improvement",
+                                           choice = "Scenario 2 - Middle of the road",
+                                           placement = "right"),
+                              radioTooltip(id = "SSP",
+                                           title = "SSP370 - Focus on food & energy security, environmental degradation",
+                                           choice = "Scenario 3 - A rocky road",
+                                           placement = "right"),
+                              radioTooltip(id = "SSP",
+                                           title = "SSP460 - Unequal investments, rich get richer, poor get poorer",
+                                           choice = "Scenario 4 - Inequality",
+                                           placement = "right"),
+                              radioTooltip(id = "SSP",
+                                           title = "SSP585 - Human & global capital become main focus, fossil fuels are managed",
+                                           choice = "Scenario 5 -  Armageddon",
+                                           placement = "right")
+                            )),
+                          mainPanel(plotOutput(outputId = "distPlot"))),
+                        
+                        # Button to take user to impacts tab
+                        actionButton(inputId = "to_impacts",
+                                     label = "Next page")),
+               
+               
+               tabPanel(title = "Impacts", value = "impacts", verbatimTextOutput("impacts"),
+                        mainPanel(p("The impacts of climate change are vast and sometimes unexpected. As a result of the quickly changing
+                                   climate, we can expect a variety of outcomes."), 
+                                  
+                                  p("Our climate becomes:"),
+                                  
+                                  p(strong("Hotter.")),
+                                  
+                                  p("High temperatures are often talked about in connection to climate change. An increase of CO2 in the 
                                    atmosphere means an increase in temperatures as well as an increase in soil carbon levels. The increase
                                    of soil carbon could create a disturbance for the plants growing which could eventually result in e
                                    xtinction and a lack of biodiversity. Heat waves, crop failures, and shifts in plant and animal ranges are 
-                                   expected to occur if carbon emissions continue to go unchecked. 
-                                   
-                                   Wetter. 
-                                   In correlation with the warming temperatures, glaciers and ice sheets will melt and the oceans will expand. 
+                                   expected to occur if carbon emissions continue to go unchecked."), 
+                                  
+                                  p(strong("Wetter.")),
+                                  
+                                  p("In correlation with the warming temperatures, glaciers and ice sheets will melt and the oceans will expand. 
                                    Rising sea levels will ruin coastal communities and infrastructure. This will also lead to an increase in 
                                    rainfall and flooding. It is important to note that a short term increase in rainfall could lead to drought 
-                                   and water shortages in the future.  
-                                   
-                                   More extreme. 
-                                   Warmer air and oceans are leading to an increase in the severity and number of storms and in drier areas, 
-                                   warmer weather is linked to more significant droughts and a longer fire season. 
+                                   and water shortages in the future."),  
+                                  
+                                  p(strong("More extreme.")), 
+                                  
+                                  p("Warmer air and oceans are leading to an increase in the severity and number of storms and in drier areas, 
+                                   warmer weather is linked to more significant droughts and a longer fire season."), 
+                                  
+                                  p(em("To sum it up…")),  
+                                  
+                                  HTML("<ul>
+                            <li> Droughts </li>
+                            <li> Extreme weather conditions </li>
+                            <li> Shortages in staple crops (corn & wheat) </li>
+                            <li> Food insecurity </li>
+                            <li> Price spikes on consumable items </li> 
+                            <li> Unlivable coastal regions </li>
+                            <li> Death of coral reefs </li>
+                            <li> Fish and sea life would be pushed from their homes </li>
+                            <li> Mass extinction of climate dependent animals </li>
+                            <li> Arctic melting </li>
+                            <li> Lack of land and other resources </li>
+                            <li> Lack of resources could lead to political and social tensions </li>
+                            </ul>"), 
+                            width = 12
+                        )))))
 
-                                   To sum it up…  
-                                   Droughts
-                                   Extreme weather conditions 
-                                   Shortages in staple crops (corn & wheat)
-                                   Food insecurity
-                                   Price spikes on consumable items
-                                   Unlivable coastal regions
-                                   Death of coral reefs
-                                   Fish and sea life would be pushed from their homes
-                                   Mass extinction of climate dependent animals 
-                                   Arctic melting 
-                                   Lack of land and other resources 
-                                   Lack of resources could lead to political and social tensions"))
-                
-               
-                
-                )))
-                             
-                           
-    
-    
-    
-    
-    # Define server logic required to draw a histogram ----
-    server <- function(input, output) {
-      
-      output$distPlot <- renderPlot({
-        
-        q10 <- input$Q10
-        
-        file <- SSP_files[input$SSP]
-        Sc <- system.file(file, package = "hector")
-        core <- newcore(Sc)
-        run(core)
-        reference <- fetchvars(core, 2000:2200, variables)
-        reference$source <- "reference"
-        setvar(core, NA, Q10_RH(), q10, getunits(Q10_RH()))
-        reset(core)
-        run(core)
-        result <- fetchvars(core, 2000:2200, variables)
-        result$source <- "user_input"
-        shutdown(core)
-        
-        output <- bind_rows(reference, result)
-        
-       
-          
-        var_labels <- c("Atmospheric C", "Ocean pH", "Soil C", "Temperature increase")
-        names(var_labels) <- variables
-        
-        ggplot(output, aes(year, value, color = source, linetype = units)) +
-          geom_line() +
-          facet_wrap(~variable, 
-                     scales = "free",
-                     labeller = labeller(variable = var_labels)) + 
-          ggtitle(paste0("Q10 = ", q10, " in scenario ", input$SSP)) +
-          scale_color_viridis_d(begin = 0.4, end = 0.8) +
-          scale_linetype_manual(values = c(3, 5, 4, 1)) +
-          theme_light()
-      }
-      )
-    }
-    
-    # Create Shiny app ----
 
-    shinyApp(ui = ui, server = server)
+# Define server logic required to draw a histogram ----
+server <- function(input, output, session) {
+  
+  output$distPlot <- renderPlot({
     
+    q10 <- input$Q10
+    
+    file <- SSP_files[input$SSP]
+    Sc <- system.file(file, package = "hector")
+    core <- newcore(Sc)
+    run(core)
+    reference <- fetchvars(core, 2000:2200, variables)
+    reference$source <- "reference"
+    setvar(core, NA, Q10_RH(), q10, getunits(Q10_RH()))
+    reset(core)
+    run(core)
+    result <- fetchvars(core, 2000:2200, variables)
+    result$source <- "user_input"
+    shutdown(core)
+    
+    output <- bind_rows(reference, result)
+    
+    var_labels <- c("Atmospheric C", "Ocean pH", "Soil C", "Temperature increase")
+    names(var_labels) <- variables
+    
+    ggplot(output, aes(year, value, color = source, linetype = units)) +
+      geom_line() +
+      facet_wrap(~variable, 
+                 scales = "free",
+                 labeller = labeller(variable = var_labels)) + 
+      ggtitle(paste0("Q10 = ", q10, " in scenario ", input$SSP)) +
+      scale_color_viridis_d(begin = 0.4, end = 0.8) +
+      scale_linetype_manual(values = c(3, 5, 4, 1)) +
+      theme_light()
+  })
+  
+  # Server functions connecting to the actionButton calls that update which tab
+  # a user is on. The session argument is passed into the server() call above
+  # and allows for functional modifications to the user's active Shiny session. 
+  observeEvent(input$to_graphs, {updateTabsetPanel(session,
+                                                   inputId = "tabs", 
+                                                   selected = "graphs")})
+  
+  observeEvent(input$to_impacts, {updateTabsetPanel(session,
+                                                    inputId = "tabs", 
+                                                    selected = "impacts")})
+}
+
+# Create Shiny app ----
+
+shinyApp(ui = ui, server = server)
+
