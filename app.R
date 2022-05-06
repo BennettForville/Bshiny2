@@ -31,6 +31,7 @@ motr_reference <- fetchvars(core, 2000:2200, variables)
 motr_reference$source <- "MOTR reference"
 shutdown(core)
 
+first_time <- TRUE
 
 # https://stackoverflow.com/questions/36132204/reactive-radiobuttons-with-tooltipbs-in-shiny
 # This function allows for multiple unique hover bars within a radioButtons call
@@ -218,21 +219,26 @@ server <- function(input, output, session) {
     
     q10 <- input$Q10
     
-    file <- SSP_files[input$SSP]
-    Sc <- system.file(file, package = "hector")
-    core <- newcore(Sc)
-    run(core)
-    reference <- fetchvars(core, 2000:2200, variables)
-    reference$source <- "reference"
-    setvar(core, NA, Q10_RH(), q10, getunits(Q10_RH()))
-    reset(core)
-    run(core)
-    result <- fetchvars(core, 2000:2200, variables)
-    result$source <- "user_input"
-    shutdown(core)
-    
-    output <- bind_rows(reference, result, motr_reference)
-    
+    if(first_time) {
+      output <- motr_reference
+      first_time <<- FALSE
+    } else {
+      file <- SSP_files[input$SSP]
+      Sc <- system.file(file, package = "hector")
+      core <- newcore(Sc)
+      run(core)
+      reference <- fetchvars(core, 2000:2200, variables)
+      reference$source <- "reference"
+      setvar(core, NA, Q10_RH(), q10, getunits(Q10_RH()))
+      reset(core)
+      run(core)
+      result <- fetchvars(core, 2000:2200, variables)
+      result$source <- "user_input"
+      shutdown(core)
+      
+      output <- bind_rows(reference, result, motr_reference)
+    }
+
     var_labels <- c("Atmospheric C", "Ocean pH", "Soil C", "Temperature increase")
     names(var_labels) <- variables
     
