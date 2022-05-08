@@ -80,10 +80,11 @@ ui <- fluidPage(
                                   
                                   actionButton(inputId = "to_home",
                                                label = "Next page"),
-                                  width = 20),
-                        sidebarPanel(
-                          img(src = "intro_image.png", height = 140, width = 400)
-                        )),
+                                  width = 20)),
+                      #attempt to add pictures but not fully working 
+                          #sidebarPanel(
+                         # img(src = "intro_image.png", height = 140, width = 400))
+                        
                
  
                
