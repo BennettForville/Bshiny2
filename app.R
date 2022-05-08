@@ -72,7 +72,22 @@ ui <- fluidPage(
     navbarPage(title = "",
                id = "tabs",
                
-               tabPanel(title ="Home", value = "home", verbatimTextOutput("Home"),
+               tabPanel(title = "Welcome", value = "welcome", verbatimTextOutput("Welcome"),
+                        mainPanel(p("Welcome!"),
+                                  p("This is an interactive app to help spread information about climate change
+                                    and what the worlds future looks like."),
+                                  p(em("App by Bennett Grace Forville")),
+                                  
+                                  actionButton(inputId = "to_home",
+                                               label = "Next page"),
+                                  width = 20),
+                        sidebarPanel(
+                          img(src = "intro_image.png", height = 140, width = 400)
+                        )),
+               
+ 
+               
+               tabPanel(title ="Intro", value = "intro", verbatimTextOutput("intro"),
                         mainPanel( p("As we know, the planet is quickly warming. 
                                    This is an event that we all know as climate change, but what exactly does it mean?"),
                                    
@@ -85,20 +100,17 @@ ui <- fluidPage(
                                    that track historical climate data and project possible future outcomes for the climate based
                                    on our actions in the present day."),
                                    
-                                   p("You will be able to manipulate the Q10 value and select a specific SSP. Q10 measures the 
-                                   sensitivity of heterotrophic respiration to temperature increases - essentially looking at 
-                                   how much carbon dioxide plants put into the atmosphere. A higher Q10 means more CO2. An SSP 
-                                   is a shared socioeconomic pathway; the SSPs are a widely used class of climate scenarios. This 
-                                   app uses SSP 1-5. SSP 2, called the middle of the road, is the best projection for our future 
-                                   if we don't make any drastic changes. SSP 1, 3, 4, & 5 are different possible outcomes for our 
-                                   climate depending on changes to global policy and our daily actions. An SSP is a good way to explore
-                                   the impacts of different global policies and how they would affect both the Earth and the people 
-                                   living on it. The SSPs are differentiated by different levels of challenge to mitigation, which is 
-                                   essentially looking at the reduction of carbon emissions, and adaptation, meaning changes that humans 
-                                   will have to make in order to live with the consequences of climate change. For example, taking mitigation 
-                                   efforts such as putting limits on fossil fuel emissions, encouraging the use of renewable energy, 
-                                   or even encouraging the use of public transportation would require a change in one's day to day life - 
-                                   some actions being more challenging to implement than others."),
+                                   p("You will be able to manipulate two model inputs. “Q10” measures the sensitivity of microbial respiration
+                                     to temperature increases - essentially looking at how many carbon dioxide microbes are put into the
+                                     atmosphere as the world warms. A higher Q10 means more CO2. An “SSP” is a shared socioeconomic pathway;
+                                     the SSPs are a widely used class of climate scenarios. SSP 2, called the middle of the road, is the best 
+                                     projection for our future if we don't make any drastic changes. SSP 1, 3, 4, & 5 are different possible 
+                                     outcomes for our climate depending on changes to global policy and our daily actions. The SSPs are differentiated
+                                     by different levels of challenge to mitigation, which is essentially looking at the reduction of carbon 
+                                     emissions, and adaptation, meaning changes that humans will have to make in order to live with the consequences
+                                     of climate change. For example, taking mitigation efforts such as putting limits on fossil fuel emissions, 
+                                     encouraging the use of renewable energy, or even encouraging the use of public transportation would require 
+                                     a change in one's day to day life - some actions being more challenging to implement than others."),
                                    
                                    p("This app will provide you with several outcomes for the future while looking specifically at 
                                    changes in global temperature, atmospheric carbon, carbon levels in soil, and ocean salinity. 
@@ -107,7 +119,7 @@ ui <- fluidPage(
                                    consequences."),
                                    
                                    p("After viewing the information under the graphs tab, head over to the impacts tab to learn more."),
-                                   width = 12),
+                                   width = 20),
                         
                         # Button to take user to the graphs tab
                         actionButton(inputId = "to_graphs",
@@ -123,7 +135,7 @@ ui <- fluidPage(
                             
                             # Input: Slider for the value of q10 ----
                             sliderInput(inputId = "Q10",
-                                        label = "Choose a Q10 value:",
+                                        label = "Multiply CO2 by:",
                                         min = 1,
                                         max = 5,
                                         value = 2),
@@ -175,7 +187,7 @@ ui <- fluidPage(
                                   p(strong("Hotter.")),
                                   
                                   p("High temperatures are often talked about in connection to climate change. An increase of CO2 in the 
-                                   atmosphere means an increase in temperatures as well as an increase in soil carbon levels. The increase
+                                   atmosphere means an increase in temperatures as well as a decrease in soil carbon levels. The decrease
                                    of soil carbon could create a disturbance for the plants growing which could eventually result in e
                                    xtinction and a lack of biodiversity. Heat waves, crop failures, and shifts in plant and animal ranges are 
                                    expected to occur if carbon emissions continue to go unchecked."), 
@@ -187,7 +199,7 @@ ui <- fluidPage(
                                    rainfall and flooding. It is important to note that a short term increase in rainfall could lead to drought 
                                    and water shortages in the future."),  
                                   
-                                  p(strong("More extreme.")), 
+                                  p(strong("More extreme weather.")), 
                                   
                                   p("Warmer air and oceans are leading to an increase in the severity and number of storms and in drier areas, 
                                    warmer weather is linked to more significant droughts and a longer fire season."), 
@@ -208,8 +220,22 @@ ui <- fluidPage(
                             <li> Lack of land and other resources </li>
                             <li> Lack of resources could lead to political and social tensions </li>
                             </ul>"), 
-                            width = 12
-                        )))))
+                            width = 20)),
+                        
+                   tabPanel(title = "Info", value = "info", verbatimTextOutput("Info"),
+                                 mainPanel(p("Thank you for going through my app!"),
+                                           p(em("For more information, you can look at the following sources...")),
+                                           
+                                           HTML("<ul>
+                            <li> https://www.noaa.gov/education/resource-collections/climate/climate-change-impacts </li>
+                            <li> https://www.ucsusa.org/climate/impacts </li>
+                            <li> https://climate.nasa.gov/news/2878/a-degree-of-concern-why-global-temperatures-matter/ </li>
+                            <li> https://climate.nasa.gov/news/2865/a-degree-of-concern-why-global-temperatures-matter/ </li>
+                            <li> https://jgcri.shinyapps.io/HectorUI/ </li>
+                            </ul>"),
+                            width = 20,
+                            
+                                    )))))
 
 
 # Define server logic required to draw a histogram ----
@@ -255,7 +281,10 @@ server <- function(input, output, session) {
   
   # Server functions connecting to the actionButton calls that update which tab
   # a user is on. The session argument is passed into the server() call above
-  # and allows for functional modifications to the user's active Shiny session. 
+  # and allows for functional modifications to the user's active Shiny session.
+  observeEvent(input$to_home, {updateTabsetPanel(session,
+                                                 inputId = "tabs",
+                                                 selected = "intro")})
   observeEvent(input$to_graphs, {updateTabsetPanel(session,
                                                    inputId = "tabs", 
                                                    selected = "graphs")})
