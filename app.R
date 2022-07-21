@@ -73,7 +73,7 @@ ui <- fluidPage(
                id = "tabs",
                
                tabPanel(title = "Welcome", value = "welcome", verbatimTextOutput("Welcome"),
-                        mainPanel(p("Welcome!"),
+                        sidebarPanel(p("Welcome!"),
                                   p("This is an interactive app to help spread information about climate change
                                     and what the worlds future looks like."),
                                   p(em("App by Bennett Grace Forville")),
@@ -81,13 +81,9 @@ ui <- fluidPage(
                                   actionButton(inputId = "to_home",
                                                label = "Next page"),
                                   width = 20)),
-                      #attempt to add pictures but not fully working 
-                          #sidebarPanel(
-                         # img(src = "intro_image.png", height = 140, width = 400))
-                        
-               
- 
-               
+                       
+                          
+                      
                tabPanel(title ="Intro", value = "intro", verbatimTextOutput("intro"),
                         mainPanel( p("As we know, the planet is quickly warming. 
                                    This is an event that we all know as climate change, but what exactly does it mean?"),
@@ -136,7 +132,7 @@ ui <- fluidPage(
                             
                             # Input: Slider for the value of q10 ----
                             sliderInput(inputId = "Q10",
-                                        label = "Multiply CO2 by:",
+                                        label = "Change CO2 levels to:",
                                         min = 1,
                                         max = 5,
                                         value = 2),
@@ -274,7 +270,7 @@ server <- function(input, output, session) {
       facet_wrap(~variable, 
                  scales = "free",
                  labeller = labeller(variable = var_labels)) + 
-      ggtitle(paste0("Q10 = ", q10, " in scenario ", input$SSP)) +
+      ggtitle(paste0("Q10 = ", q10, " in ", input$SSP)) +
       scale_color_viridis_d(begin = 0.4, end = 0.8) +
       scale_linetype_manual(values = c(3, 5, 4, 1)) +
       theme_light()

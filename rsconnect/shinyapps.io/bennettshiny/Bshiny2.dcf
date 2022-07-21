@@ -1,0 +1,13 @@
+name: Bshiny2
+title: Bshiny2
+username:
+account: bennettshiny
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6290484
+bundleId: 5924080
+url: https://bennettshiny.shinyapps.io/Bshiny2/
+when: 1652986869.95044
+lastSyncTime: 1652986869.95044
+asMultiple: FALSE
+asStatic: FALSE
