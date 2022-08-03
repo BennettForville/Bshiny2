@@ -1,0 +1,152 @@
+---
+title: "BGF_Surveystudy"
+author: "BGF"
+date: "7/20/2022"
+output: html_document
+---
+
+# Intro & methods 
+
+##### My academic year internship was spent building an app using R, Hector, and Shiny to help spread information about climate change to a high school audience. I hoped that the app would be successful in teaching my peers about the severity of climate change and dive into deeper scientific detail while still giving them content they could understand. 
+
+##### Over my summer internship, I decided I wanted to actually test the successfulness of the app on my peers. So, we created and distributed surveys to participants with the intent of determining whether there was a significant change in survey scores between participants that interacted with the app and those that did not. 
+
+##### Using a group of 20 randomly assigned participants, with 10 participants being assigned to the control group (meaning they did not receive the app) and 10 participants being assigned to the treatment group (they did receive the app), we sent out three different rounds of surveys. The treatment groups surveys consisted of the following - The first survey was used to get a sense of how much the participants already knew before receiving the app, the second survey was sent out with a link to the app to see if scores improved when participants used the app, and the third survey was sent out a week after to look at the information retention of the participants. The control group got the same exact surveys as the treatment group but they did not receive a link to the app. 
+
+##### Our hypotheses - If participants use our app, there will be a significant improvement in performance between the t0 and t1 surveys relative to the control group. A week after interaction with the app, performance on t2 will be better than t0 but worse than t1 relative to the control group.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+#reading in survey data
+data <- read.csv("C:/Users/forv029/Downloads/final data - Sheet1.csv")
+```
+
+
+#Survey & results 
+ 
+```{r}
+# reshaping data so each survey in its own column and compute difference in survey scores
+data %>% 
+  select(Points, Test, ID, group)%>%
+  mutate(group = as.factor(group))%>% # group is categorical, not numeric 
+  pivot_wider(names_from = "Test", values_from = "Points")%>%
+  mutate(t1minust0 = t1-t0, 
+         t2minust0 = t2-t0,
+         t2minust1 = t2-t1)-> data_wide
+
+# creating a data set that labels group as treatment and control 
+treatment <- data%>%
+  filter(group == 1)%>%
+  mutate(group = "treatment")
+
+control <- data%>%
+  filter(group == 2)%>%
+  mutate(group = "control")
+
+new_data <- bind_rows(treatment, control)
+
+# changing treatment and control labels for data_wide 
+treatment2 <- data_wide%>%
+  filter(group == 1)%>%
+  mutate(group = "treatment")
+
+control2 <- data_wide%>%
+  filter(group == 2)%>%
+  mutate(group = "control")
+
+newdata_wide <- bind_rows(treatment2, control2)
+
+# creating groups for t testing 
+group1 <- filter(data_wide, group == 1)
+group2 <- filter(data_wide, group == 2)
+
+# Summary of all data with box plots 
+tapply(new_data$Points, new_data$Test, summary)
+
+# Box plot dividing data by survey and treatment vs control 
+ggplot(new_data, aes(Points, group, group = group)) + 
+  geom_boxplot(color = "lightgrey") + 
+  geom_point(color = "blue", size = 3)+
+  facet_grid(group ~ Test)
+
+# Histogram of survey results
+ggplot(new_data, aes(Points, color = group, fill = group, group = group))+
+  geom_histogram(bins = 10, position = "dodge")+
+  facet_wrap(~Test)
+
+```
+
+### The following box plot and statistical tests are looking at the change in scores between t0 and t1
+```{r}
+ggplot(newdata_wide, aes(group, t1minust0, color = group))+
+  geom_boxplot()+
+  ylab("Change in score from t0 to t1")
+
+# Statistical testing 
+#test whether change in scores between t0&t1 is greater for the control group
+t.test(group1$t1minust0, group2$t1minust0, alternative = "greater")
+```
+##### When looking at the change in scores from t0 to t1 for groups 1 and 2, the p-value result of the t test is 0.006 which is less than alpha(.05). Because the p-value is less than alpha, we have significant evidence to reject the null hypothesis(Ho) which means that the change in scores for group 1 between the t0 and t1 surveys is greater than the change in scores seen in group 2.
+
+### The following box plot and statistical test are looking at the change in scores between t0 and t2
+```{r}
+ggplot(newdata_wide, aes(group, t2minust0, color = group))+
+  geom_boxplot()+
+  ylab("Change in score from t0 to t2")
+
+# Statistical testing 
+#test whether change in scores between t2&t1 is greater for control group
+t.test(group1$t2minust0, group2$t2minust0, alternative = "greater")
+```
+##### When looking at the change in scores from t0 to t2 for groups 1 and 2, the p-value result of the t test is 0.1765 which is greater than alpha(.05). Because the p-value is greater than alpha, we do not have significant evidence to reject the null hypothesis(Ho) which means that there is not a significant difference in the change in scores for group 1 and group 2 between t0 and t2 surveys. 
+
+```{r}
+ggplot(newdata_wide, aes(group, t2minust1, color = group))+
+  geom_boxplot()+
+  ylab("Change in score from t1 to t2")
+
+# Statistical testing 
+#test whether change in scores between t2&t1 is greater than t2-t1 but less than t1-t0
+t.test(group1$t2minust1, group2$t2minust1, alternative = "greater")
+```
+##### When looking at the change in scores from t1 to t2 for groups 1 and 2, the p-value result of the t test is 0.89 which is greater than alpha(.05). Because the p-value is greater than alpha, we do not have significant evidence to reject the null hypothesis(Ho) which means that there is not a significant difference in the change in scores for group 1 and group 2 between t1 and t2 surveys. 
+
+# Statistical tests
+##### Important things to note when looking at the following t tests - 
+##### Group 1 - treatment group 
+##### Group 2 - control group
+##### Both groups received identical t0 surveys 
+##### Group 1 received a link to an app with the t1 survey while group 2 did not receive the link to the app. Both groups got the same survey 
+##### Both groups received identical t2 surveys 
+### Hypotheses -
+##### Ho - The use of a climate based science app will have no impact on performance on the t0, t1, and t2 surveys. 
+##### Ha - The use of a climate based science app will lead to an increase in performance between the t0 and t1 surveys relative to the control group.
+
+```{r}
+t.test(group1$t0, group2$t0, alternative = "greater")
+```
+##### When comparing scores between group 1 and group 2 for the t0 surveys, the p-value result of the t test is 0.39 which is greater than alpha(.05). Because the p-value is greater than alpha, we fail to reject the null hypothesis(Ho) which means that there is not significant evidence resulting in a difference of performance on the t0 survey between group 1 and group 2. 
+
+```{r}
+t.test(group1$t1, group2$t1, alternative = "greater")
+```
+##### When comparing scores between group 1 and group 2 for the t1 surveys, the p-value result of the t test is 0.00046 which is less than alpha(.05). Because the p-value is less than alpha, we have significant evidence to reject the null hypothesis(Ho) which means that performance on the t1 survey was better in group 1, the treatment group, than group 2, the control group. 
+
+```{r}
+t.test(group1$t2, group2$t2, alternative = "greater")
+```
+##### When comparing scores between group 1 and group 2 for the t2 surveys, the p-value result of the t test is 0.09 which is greater than alpha(.05). Because the p-value is greater than alpha, we fail to reject the null hypothesis(Ho) which means that there is not significant evidence resulting in a difference of performance performance on the t2 survey between group 1 and group 2. 
+
+# Conclusions
+##### As expected, performance between group 1 and group 2 on the t0 survey was very similar. Using only background knowledge, there was not a significant difference in survey scores between the treatment and control group. 
+
+##### After the treatment group received the app, scores on t1 increased while the results of the control group remained relatively the same. When looking at the results of the t1 survey, there is significant evidence to prove that the use of a climate based science app resulted in an increase in scores for the treatment group between t0 and t1 relative to the control group. 
+
+##### These surveys were also testing the knowledge retention of app users. Results show that while the treatment group had higher average scores on the t1 and t2 surveys, there was not significant evidence to prove that the climate based science app was responsible for the change in scores of the treatment group between t1 & t2 as well as t0 & t2. 
+
+
