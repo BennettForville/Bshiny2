@@ -15,8 +15,12 @@ output: html_document
 
 ##### Our hypotheses: If participants use our app, there will be a significant improvement in performance between the t0 and t1 surveys relative to the control group. A week after interaction with the app, performance on t2 will be better than t0 but worse than t1 relative to the control group.
 
+##### Our protocol - There will be 20 participants in this survey. The participants will be randomly assigned using a random number generator, 10 to the control group and 10 to the study group. Though questions will be the same, the treatment group will receive the link to the app with their t1 survey while the control group will not. All participants will get a sent script for the t0 exam with instructions and the actual t0 exam. A day or so later, everyone would be sent t1 script, the control group[ with instructions just to complete the survey and the survey group would get an actual app, survey group has instructions to play with the app for a minimum of 3 minutes before taking the t1 exam. A week after the t1 survey is complete, the t2 script and survey get sent to participants. Then we will analyze the results. 
 
-```{r setup, include=FALSE}
+##### Here is a link to my app - https://bennettshiny.shinyapps.io/Bshiny2/
+##### The app allows users to read a brief intro about climate change and interact with graphs that use Hector data to visually represent possible feautures with atmospheric carbon, soil carbon, ocean salinity, and average tempurature increase. It then explains the possible impacts of climate change to emphasize the severity of climate change to app users.  
+
+```{r setup, include=FALSE, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(dplyr)
@@ -30,7 +34,7 @@ colnames(data)[1] <- "Test"
 
 # Survey & results 
  
-```{r}
+```{r, echo=FALSE}
 # reshaping data so each survey in its own column and compute difference in survey scores
 data %>% 
   select(Points, Test, ID, group)%>%
@@ -65,25 +69,47 @@ newdata_wide <- bind_rows(treatment2, control2)
 # creating groups for t testing 
 group1 <- filter(data_wide, group == 1)
 group2 <- filter(data_wide, group == 2)
+```
 
+#### The following looks at a summary of the data collected divided by suvey, t0, t1, & t2. 
+```{r}
 # Summary of all data with box plots 
 tapply(new_data$Points, new_data$Test, summary)
+```
 
+## Summary of data - treatment vs control 
+```{r, echo=FALSE}
 # Box plot dividing data by survey and treatment vs control 
 ggplot(new_data, aes(Points, group, group = group)) + 
   geom_boxplot(color = "lightgrey") + 
   geom_point(color = "blue", size = 3)+
   facet_grid(group ~ Test)
+```
 
+
+## Histogram of summary data 
+```{r, echo=FALSE}
 # Histogram of survey results
 ggplot(new_data, aes(Points, color = group, fill = group, group = group))+
   geom_histogram(bins = 10, position = "dodge")+
   facet_wrap(~Test)
-
 ```
 
+# Statistical testing & Boxplots
+
+##### Important things to note when looking at the following t tests - 
+##### What exactly is a t test - A t-test measures the difference in group means divided by the pooled standard error of the two group means. It then computes, based on the Student’s t-distribution, how likely it would be to observe that difference if there is actually no difference between the groups.
+##### Group 1 - treatment group 
+##### Group 2 - control group
+##### Both groups received identical t0 surveys 
+##### Group 1 received a link to an app with the t1 survey while group 2 did not receive the link to the app. Both groups got the same survey 
+##### Both groups received identical t2 surveys 
+### Hypotheses -
+##### Ho - The use of a climate based science app will have no impact on performance on the t0, t1, and t2 surveys. 
+##### Ha - The use of a climate based science app will lead to an increase in performance between the t0 and t1 surveys relative to the control group.
+
 ### The following box plot and statistical tests are looking at the change in scores between t0 and t1
-```{r}
+```{r, echo=FALSE}
 ggplot(newdata_wide, aes(group, t1minust0, color = group))+
   geom_boxplot()+
   ylab("Change in score from t0 to t1")
@@ -95,7 +121,7 @@ t.test(group1$t1minust0, group2$t1minust0, alternative = "greater")
 ##### When looking at the change in scores from t0 to t1 for groups 1 and 2, the p-value result of the t test is 0.006 which is less than alpha(.05). Because the p-value is less than alpha, we have significant evidence to reject the null hypothesis(Ho) which means that the change in scores for group 1 between the t0 and t1 surveys is greater than the change in scores seen in group 2.
 
 ### The following box plot and statistical test are looking at the change in scores between t0 and t2
-```{r}
+```{r, echo=FALSE}
 ggplot(newdata_wide, aes(group, t2minust0, color = group))+
   geom_boxplot()+
   ylab("Change in score from t0 to t2")
@@ -106,7 +132,7 @@ t.test(group1$t2minust0, group2$t2minust0, alternative = "greater")
 ```
 ##### When looking at the change in scores from t0 to t2 for groups 1 and 2, the p-value result of the t test is 0.1765 which is greater than alpha(.05). Because the p-value is greater than alpha, we do not have significant evidence to reject the null hypothesis(Ho) which means that there is not a significant difference in the change in scores for group 1 and group 2 between t0 and t2 surveys. 
 
-```{r}
+```{r, echo=FALSE}
 ggplot(newdata_wide, aes(group, t2minust1, color = group))+
   geom_boxplot()+
   ylab("Change in score from t1 to t2")
@@ -117,37 +143,39 @@ t.test(group1$t2minust1, group2$t2minust1, alternative = "greater")
 ```
 ##### When looking at the change in scores from t1 to t2 for groups 1 and 2, the p-value result of the t test is 0.89 which is greater than alpha(.05). Because the p-value is greater than alpha, we do not have significant evidence to reject the null hypothesis(Ho) which means that there is not a significant difference in the change in scores for group 1 and group 2 between t1 and t2 surveys. 
 
-# Statistical tests
-##### Important things to note when looking at the following t tests - 
-##### Group 1 - treatment group 
-##### Group 2 - control group
-##### Both groups received identical t0 surveys 
-##### Group 1 received a link to an app with the t1 survey while group 2 did not receive the link to the app. Both groups got the same survey 
-##### Both groups received identical t2 surveys 
-### Hypotheses -
-##### Ho - The use of a climate based science app will have no impact on performance on the t0, t1, and t2 surveys. 
-##### Ha - The use of a climate based science app will lead to an increase in performance between the t0 and t1 surveys relative to the control group.
+# Further statistical testing
 
-```{r}
+##### This t test is comparing the results of the t0 survey between the control and treatment group.
+```{r, echo=FALSE}
 t.test(group1$t0, group2$t0, alternative = "greater")
 ```
-##### When comparing scores between group 1 and group 2 for the t0 surveys, the p-value result of the t test is 0.39 which is greater than alpha(.05). Because the p-value is greater than alpha, we fail to reject the null hypothesis(Ho) which means that there is not significant evidence resulting in a difference of performance on the t0 survey between group 1 and group 2. 
+#####  When comparing scores between group 1 and group 2 for the t0 surveys, the p-value result of the t test is 0.39 which is greater than alpha(.05). Because the p-value is greater than alpha, we fail to reject the null hypothesis(Ho) which means that there is not significant evidence resulting in a difference of performance on the t0 survey between group 1 and group 2. 
 
-```{r}
+##### This t test is comparing the results of the t1 survey between the control and treatment group.
+```{r, echo=FALSE}
 t.test(group1$t1, group2$t1, alternative = "greater")
 ```
 ##### When comparing scores between group 1 and group 2 for the t1 surveys, the p-value result of the t test is 0.00046 which is less than alpha(.05). Because the p-value is less than alpha, we have significant evidence to reject the null hypothesis(Ho) which means that performance on the t1 survey was better in group 1, the treatment group, than group 2, the control group. 
 
-```{r}
+##### This t test is comparing the results of the t2 survey between the control and treatment group.
+```{r, echo=FALSE}
 t.test(group1$t2, group2$t2, alternative = "greater")
 ```
 ##### When comparing scores between group 1 and group 2 for the t2 surveys, the p-value result of the t test is 0.09 which is greater than alpha(.05). Because the p-value is greater than alpha, we fail to reject the null hypothesis(Ho) which means that there is not significant evidence resulting in a difference of performance performance on the t2 survey between group 1 and group 2. 
 
 # Conclusions
+
 ##### As expected, performance between group 1 and group 2 on the t0 survey was very similar. Using only background knowledge, there was not a significant difference in survey scores between the treatment and control group. 
 
 ##### After the treatment group received the app, scores on t1 increased while the results of the control group remained relatively the same. When looking at the results of the t1 survey, there is significant evidence to prove that the use of a climate based science app resulted in an increase in scores for the treatment group between t0 and t1 relative to the control group. 
 
 ##### These surveys were also testing the knowledge retention of app users. Results show that while the treatment group had higher average scores on the t1 and t2 surveys, there was not significant evidence to prove that the climate based science app was responsible for the change in scores of the treatment group between t1 & t2 as well as t0 & t2. 
 
+# Survey links
+
+##### t0 - https://docs.google.com/forms/d/e/1FAIpQLSecDNdiaTk0c859w2tmcJMoIynl4DSc50gi5O1cIMVIuHuvCQ/viewform?usp=sf_link
+
+##### t1 - https://docs.google.com/forms/d/e/1FAIpQLSdmobCvvLFrAxewO6k5_jRcpRNfAaEXOl1P8pL4S4tkx48PZg/viewform?usp=sf_link
+
+##### t2 - https://docs.google.com/forms/d/e/1FAIpQLSclOBV-ibEvj9d0V1tsIW1zvMij-E1UoBiM3_sAHvvyaW3TKA/viewform?usp=sf_link
 
