@@ -7,9 +7,9 @@ output: html_document
 
 # Introduction 
 
-My academic year internship was spent building an app using R, Hector, and Shiny to help spread information about climate change to a high school audience. I hoped that the app would be successful in teaching my peers about the severity of climate change and dive into deeper scientific detail while still giving them content they could understand. 
+My academic year internship was spent building an app using R, Hector, and Shiny to help spread information about climate change to a high school audience. I hoped that the app would be successful in teaching my peers about the severity of climate change and dive into deeper scientific detail while still giving them content they could understand. This is important because my peers get most of their information online, and science communicators are only beginning understand the most effective strategies for reaching this audience (see [this link](https://www.aaas.org/programs/center-public-engagement-science-and-technology/communicating-science-online) by AAAS for example).
 
-Over my summer internship, I decided I wanted to actually measure the impact of the app on my peers. So, we created and distributed surveys to participants with the intent of determining whether there was a significant difference in survey scores between participants that interacted with the app and those that did not.
+Over my summer internship, I decided I wanted to actually measure the impact of the app on my peers. So, we created and distributed surveys to participants with the intent of determining whether there was a significant difference in survey scores between participants that interacted with the app and those that did not. I was particularly interested in understanding if my subjects would exhibit a "forgetting curve" (see this [link](https://www.growthengineering.co.uk/what-is-the-forgetting-curve/)), meaning that their performance after learning about climate change would decline over time. This has seen in previous studies and science communication and climate change ([Nyhan et al. 2022](https://www.pnas.org/doi/epdf/10.1073/pnas.2122069119)]). 
 
 # Methods
 
